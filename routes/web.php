@@ -174,8 +174,10 @@ Route::prefix('pricing')->name('pricing.')->group(function () {
 
 Route::prefix('detail-pricings')->name('detail-pricings.')->group(function () {
     Route::get('/', [DetailPricingController::class, 'index'])->name('index');
+    Route::get('/{type}', [DetailPricingController::class, 'getByType'])->name('type'); 
     Route::post('/', [DetailPricingController::class, 'store'])->name('store');
     Route::put('/{id}', [DetailPricingController::class, 'update'])->name('update');
     Route::delete('/{id}', [DetailPricingController::class, 'destroy'])->name('destroy');
 });
+
 

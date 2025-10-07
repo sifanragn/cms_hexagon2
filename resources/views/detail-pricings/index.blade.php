@@ -3,7 +3,23 @@
 @section('content')
     <div class="p-6">
         <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-bold text-gray-800">Detail Pricing</h2>
+            <div class="flex items-center gap-3">
+                <h2 class="text-2xl font-bold text-gray-800">Detail Pricing</h2>
+
+                <!-- 🔹 Filter by Type -->
+                <form action="" method="GET" id="filterForm">
+                    <select name="type" id="typeFilter" class="border rounded p-2 text-sm"
+                        onchange="filterByType(this.value)">
+                        <option value="">Semua Type</option>
+                        @foreach ($types as $t)
+                            <option value="{{ $t }}" {{ isset($selectedType) && $selectedType == $t ? 'selected' : '' }}>
+                                {{ ucfirst($t) }}
+                            </option>
+                        @endforeach
+                    </select>
+                </form>
+            </div>
+
             <button onclick="openAddModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow">
                 + Add New Detail Pricing
             </button>
@@ -29,6 +45,8 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Pricing</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Deskripsi</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Keuntungan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                         <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Actions</th>
                     </tr>
@@ -41,6 +59,8 @@
                             </td>
                             <td class="px-6 py-4 font-semibold text-gray-800">{{ $item->name }}</td>
                             <td class="px-6 py-4 text-sm text-gray-600">{{ Str::limit($item->deskripsi, 60) }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">{{ Str::limit($item->keuntungan, 60) }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-800">{{ $item->type }}</td>
                             <td class="px-6 py-4">
                                 <span
                                     class="px-2 py-1 text-xs font-medium rounded-full
@@ -97,12 +117,20 @@
                         <input type="text" name="name" class="w-full border p-2 rounded" required>
                     </div>
                     <div>
+                        <label class="block font-medium mb-1">Type</label>
+                        <input type="text" name="type" class="w-full border p-2 rounded" required>
+                    </div>
+                    <div>
                         <label class="block font-medium mb-1">Status</label>
                         <input type="text" name="status" class="w-full border p-2 rounded" required>
                     </div>
                     <div>
                         <label class="block font-medium mb-1">Deskripsi</label>
-                        <textarea name="deskripsi" rows="4" class="w-full border p-2 rounded"></textarea>
+                        <textarea name="deskripsi" rows="3" class="w-full border p-2 rounded"></textarea>
+                    </div>
+                    <div>
+                        <label class="block font-medium mb-1">Keuntungan</label>
+                        <textarea name="keuntungan" rows="3" class="w-full border p-2 rounded"></textarea>
                     </div>
                 </div>
                 <div class="text-right mt-4">
@@ -136,12 +164,20 @@
                         <input type="text" name="name" id="edit_name" class="w-full border p-2 rounded" required>
                     </div>
                     <div>
+                        <label class="block font-medium mb-1">Type</label>
+                        <input type="text" name="type" id="edit_type" class="w-full border p-2 rounded" required>
+                    </div>
+                    <div>
                         <label class="block font-medium mb-1">Status</label>
                         <input type="text" name="status" id="edit_status" class="w-full border p-2 rounded" required>
                     </div>
                     <div>
                         <label class="block font-medium mb-1">Deskripsi</label>
-                        <textarea name="deskripsi" id="edit_deskripsi" rows="4" class="w-full border p-2 rounded"></textarea>
+                        <textarea name="deskripsi" id="edit_deskripsi" rows="3" class="w-full border p-2 rounded"></textarea>
+                    </div>
+                    <div>
+                        <label class="block font-medium mb-1">Keuntungan</label>
+                        <textarea name="keuntungan" id="edit_keuntungan" rows="3" class="w-full border p-2 rounded"></textarea>
                     </div>
                 </div>
                 <div class="text-right mt-4">
@@ -158,35 +194,30 @@
         <div class="bg-white max-w-md w-full rounded-lg shadow p-6 overflow-y-auto max-h-[80vh]">
             <h3 id="detailName" class="text-lg font-bold mb-3"></h3>
             <div class="space-y-3">
-                <div>
-                    <p class="font-semibold">Pricing:</p>
-                    <p id="detailPricing" class="text-gray-800"></p>
-                </div>
-                <div>
-                    <p class="font-semibold">Status:</p>
-                    <span id="detailStatus" class="px-2 py-1 text-xs font-medium rounded-full"></span>
-                </div>
-                <div>
-                    <p class="font-semibold">Deskripsi:</p>
-                    <p id="detailDeskripsi" class="text-gray-800 whitespace-pre-line"></p>
-                </div>
+                <div><p class="font-semibold">Pricing:</p><p id="detailPricing" class="text-gray-800"></p></div>
+                <div><p class="font-semibold">Type:</p><p id="detailType" class="text-gray-800"></p></div>
+                <div><p class="font-semibold">Status:</p><span id="detailStatus" class="px-2 py-1 text-xs font-medium rounded-full"></span></div>
+                <div><p class="font-semibold">Deskripsi:</p><p id="detailDeskripsi" class="text-gray-800 whitespace-pre-line"></p></div>
+                <div><p class="font-semibold">Keuntungan:</p><p id="detailKeuntungan" class="text-gray-800 whitespace-pre-line"></p></div>
             </div>
             <div class="text-right mt-4">
-                <button onclick="closeModal('detailModal')"
-                    class="bg-blue-400 text-white px-4 py-2 rounded">Tutup</button>
+                <button onclick="closeModal('detailModal')" class="bg-blue-400 text-white px-4 py-2 rounded">Tutup</button>
             </div>
         </div>
     </div>
 
     <!-- ============ SCRIPT ============ -->
     <script>
-        function openAddModal() {
-            document.getElementById('addModal').classList.add('open');
+        function filterByType(type) {
+            if (type) {
+                window.location.href = `/detail-pricings/${encodeURIComponent(type)}`;
+            } else {
+                window.location.href = `/detail-pricings`;
+            }
         }
 
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('open');
-        }
+        function openAddModal() { document.getElementById('addModal').classList.add('open'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
         function confirmDelete(id) {
             Swal.fire({
@@ -204,24 +235,17 @@
 
         function openEditModal(id) {
             const form = document.getElementById('editForm');
-            form.action = `/detail-pricings/${id}`; // ✅ perbaikan route
-
+            form.action = `/detail-pricings/${id}`;
             fetch(`/detail-pricings/${id}/edit`)
                 .then(r => r.json())
                 .then(d => {
                     document.getElementById('edit_pricing').value = d.id_pricings || '';
                     document.getElementById('edit_name').value = d.name;
+                    document.getElementById('edit_type').value = d.type;
                     document.getElementById('edit_status').value = d.status;
-                    document.getElementById('edit_deskripsi').value = d.deskripsi || ''; // ✅ deskripsi ikut terbawa
-                })
-                .catch(() => {
-                    const row = document.querySelector(`#delete-form-${id}`).closest('tr');
-                    const cells = row.getElementsByTagName('td');
-                    document.getElementById('edit_name').value = cells[1].textContent.trim();
-                    document.getElementById('edit_status').value = cells[3].textContent.toLowerCase().trim();
-                    document.getElementById('edit_deskripsi').value = cells[2].textContent.trim(); // ✅ fallback deskripsi
+                    document.getElementById('edit_deskripsi').value = d.deskripsi || '';
+                    document.getElementById('edit_keuntungan').value = d.keuntungan || '';
                 });
-
             document.getElementById('editModal').classList.add('open');
         }
 
@@ -231,40 +255,21 @@
                 .then(d => {
                     document.getElementById('detailName').textContent = d.name;
                     document.getElementById('detailPricing').textContent = d.pricing ? d.pricing.nama : 'Tidak Ada';
+                    document.getElementById('detailType').textContent = d.type || '-';
                     document.getElementById('detailDeskripsi').textContent = d.deskripsi || 'Tidak ada deskripsi';
-
+                    document.getElementById('detailKeuntungan').textContent = d.keuntungan || 'Tidak ada keuntungan';
                     const statusEl = document.getElementById('detailStatus');
                     statusEl.textContent = d.status.charAt(0).toUpperCase() + d.status.slice(1);
                     statusEl.className = `px-2 py-1 text-xs font-medium rounded-full ${
                         d.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                     }`;
-
-                    document.getElementById('detailModal').classList.add('open');
-                })
-                .catch(() => {
-                    const row = document.querySelector(`#delete-form-${id}`).closest('tr');
-                    const cells = row.getElementsByTagName('td');
-                    document.getElementById('detailName').textContent = cells[1].textContent.trim();
-                    document.getElementById('detailPricing').textContent = cells[0].textContent.trim();
-                    document.getElementById('detailDeskripsi').textContent = cells[2].textContent.trim();
-
-                    const statusEl = document.getElementById('detailStatus');
-                    const statusText = cells[3].querySelector('span').textContent.trim();
-                    statusEl.textContent = statusText;
-                    statusEl.className = cells[3].querySelector('span').className;
-
                     document.getElementById('detailModal').classList.add('open');
                 });
         }
     </script>
 
     <style>
-        .modal {
-            display: none;
-        }
-
-        .modal.open {
-            display: flex;
-        }
+        .modal { display: none; }
+        .modal.open { display: flex; }
     </style>
 @endsection

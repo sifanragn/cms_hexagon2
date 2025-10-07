@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('name');
             $table->text('deskripsi');
             $table->string('status');
+            $table->text('keuntungan');
+            $table->string('type');
             $table->timestamps();
         });
     }

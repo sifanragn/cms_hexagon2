@@ -33,6 +33,7 @@ use App\Http\Controllers\ValuesController;
 use App\Http\Controllers\VisionMissionController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\AboutTeamController;
+use App\Http\Controllers\Api\ApiDetailPricingController;
 use App\Http\Controllers\Api\ApiPricingController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\MessagesController;
@@ -66,6 +67,9 @@ Route::get('/values/{id}', [ApiValueController::class, 'show']);
 Route::get('/vision-mission', [ApiVisionMissionController::class, 'index']);
 Route::get('/pricings', [ApiPricingController::class, 'index']);
 Route::get('/pricings/{id}', [ApiPricingController::class, 'show']);
+Route::get('/detail-pricings', [ApiDetailPricingController::class, 'index']);
+Route::get('/detail-pricings/{id}', [ApiDetailPricingController::class, 'show']);
+Route::get('/detail-pricings/type/{type}', [ApiDetailPricingController::class, 'getByType']);
 
 // ======================= API CRUD (tanpa sanctum) ==========================
 Route::prefix('profile')->group(function () {

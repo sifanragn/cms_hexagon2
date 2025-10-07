@@ -120,6 +120,11 @@
                         <label class="block font-medium mb-1">Deskripsi</label>
                         <textarea name="deskripsi" rows="4" class="w-full border p-2 rounded" placeholder="Optional description"></textarea>
                     </div>
+
+                    <div>
+                        <label class="block font-medium mb-1">Deskripsi 2</label>
+                        <textarea name="deskripsi2" rows="4" class="w-full border p-2 rounded" placeholder="Optional additional description"></textarea>
+                    </div>
                 </div>
 
                 <div class="text-right mt-6">
@@ -169,6 +174,11 @@
                         <label class="block font-medium mb-1">Deskripsi</label>
                         <textarea name="deskripsi" id="edit_deskripsi" rows="4" class="w-full border p-2 rounded" placeholder="Optional description"></textarea>
                     </div>
+
+                    <div>
+                        <label class="block font-medium mb-1">Deskripsi 2</label>
+                        <textarea name="deskripsi2" id="edit_deskripsi2" rows="4" class="w-full border p-2 rounded" placeholder="Optional additional description"></textarea>
+                    </div>
                 </div>
 
                 <div class="text-right mt-6">
@@ -210,6 +220,11 @@
                 <div id="detailDescriptionSection">
                     <p class="font-semibold">Deskripsi:</p>
                     <p id="detailDeskripsi" class="text-gray-800 whitespace-pre-line mt-1"></p>
+                </div>
+
+                <div id="detailDescription2Section">
+                    <p class="font-semibold">Deskripsi 2:</p>
+                    <p id="detailDeskripsi2" class="text-gray-800 whitespace-pre-line mt-1"></p>
                 </div>
             </div>
 
@@ -261,6 +276,7 @@
                     document.getElementById('edit_diskon').value = d.diskon || '';
                     document.getElementById('edit_status').value = d.status;
                     document.getElementById('edit_deskripsi').value = d.deskripsi || '';
+                    document.getElementById('edit_deskripsi2').value = d.deskripsi2 || '';
 
                     document.getElementById('editModal').classList.add('open');
                 })
@@ -302,6 +318,15 @@
                         descSection.style.display = 'block';
                     } else {
                         descSection.style.display = 'none';
+                    }
+
+                    const desc2Section = document.getElementById('detailDescription2Section');
+                    const desc2Element = document.getElementById('detailDeskripsi2');
+                    if (d.deskripsi2 && d.deskripsi2.trim()) {
+                        desc2Element.textContent = d.deskripsi2;
+                        desc2Section.style.display = 'block';
+                    } else {
+                        desc2Section.style.display = 'none';
                     }
 
                     document.getElementById('detailModal').classList.add('open');

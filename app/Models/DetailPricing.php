@@ -16,6 +16,8 @@ class DetailPricing extends Model
         'name',
         'deskripsi',
         'status',
+        'keuntungan',
+        'type'
     ];
 
     /**

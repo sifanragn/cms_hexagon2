@@ -10,6 +10,7 @@ class Pricing extends Model
         'nama',
         'title',
         'deskripsi',
+        'deskripsi2',
         'price',
         'diskon',
         'total',
