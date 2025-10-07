@@ -86,7 +86,7 @@
     <!-- ============ ADD MODAL ============ -->
     <div id="addModal" class="modal fixed inset-0 z-50 bg-black/40 justify-center items-center">
         <div class="bg-white max-w-2xl w-full rounded-lg shadow p-8 overflow-y-auto max-h-[90vh]">
-            <h2 class="text-xl font-bold mb-4">Add New Pricing</h2>
+            <h2 class="text-xl font-bold mb-4">Add New Layanan</h2>
             <form action="{{ route('pricing.store') }}" method="POST">
                 @csrf
                 <div class="space-y-4">
