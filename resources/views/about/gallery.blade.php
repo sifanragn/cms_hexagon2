@@ -37,7 +37,7 @@
                 data-update-url="{{ route('about.gallery.update', $gallery->id) }}" onclick="selectGalleryItem(this)">
                 <img src="{{ asset('storage/' . $gallery->image) }}" class="object-cover h-full w-full" alt="Gallery image">
 
-                <!-- Hidden delete form for each item -->
+                <!-- Hidden delete form -->
                 <form method="POST" action="{{ route('about.gallery.delete', $gallery->id) }}" class="delete-form"
                     style="display: none;">
                     @csrf
@@ -129,20 +129,34 @@
             document.getElementById('dropdown').classList.add('hidden');
         }
 
+        // ✅ Perbaikan fungsi modal tambah
         function openAddModal() {
             const modal = document.getElementById('addModal');
-            const content = modal.querySelector('div');
+            const content = modal.querySelector('.bg-white'); // ambil div konten dalam modal
+
             modal.classList.remove('hidden');
-            setTimeout(() => content.classList.replace('scale-95', 'scale-100'), 10);
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+
             document.getElementById('dropdown').classList.add('hidden');
         }
 
         function closeAddModal() {
-            const form = document.getElementById('addForm');
-            form.reset();
             const modal = document.getElementById('addModal');
-            modal.classList.add('hidden');
+            const content = modal.querySelector('.bg-white'); // pastikan sama
+            const form = document.getElementById('addForm');
+
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                if (form) form.reset();
+            }, 200);
         }
+
 
         function openEditModal() {
             if (!selectedGalleryItem) {
@@ -154,7 +168,6 @@
             const editForm = document.getElementById('editForm');
             const updateUrl = selectedGalleryItem.dataset.updateUrl;
 
-            // ✅ Pastikan form action diarahkan ke URL update
             editForm.setAttribute('action', updateUrl);
 
             const modal = document.getElementById('editModal');
@@ -230,5 +243,17 @@
                 html: '<ul style="text-align: left;">@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>'
             });
         @endif
+
+        // Tambah file input baru
+        function addMoreFiles() {
+            const fileInputs = document.getElementById('fileInputs');
+            const newInput = document.createElement('input');
+            newInput.type = 'file';
+            newInput.name = 'image[]';
+            newInput.required = true;
+            newInput.accept = 'image/*';
+            newInput.className = 'mb-2 block w-full border p-2 rounded';
+            fileInputs.appendChild(newInput);
+        }
     </script>
 @endsection
