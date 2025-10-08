@@ -124,7 +124,7 @@ Route::prefix('about')->group(function () {
 
     Route::get('/gallery', [GalleryController::class, 'index'])->name('about.gallery');
     Route::post('/gallery/store', [GalleryController::class, 'store'])->name('about.gallery.store');
-    Route::post('/gallery/update/{id}', [GalleryController::class, 'update'])->name('about.gallery.update');
+    Route::put('/gallery/update/{id}', [GalleryController::class, 'update'])->name('about.gallery.update');
     Route::delete('/gallery/delete/{id}', [GalleryController::class, 'destroy'])->name('about.gallery.delete');
 });
 
@@ -174,7 +174,7 @@ Route::prefix('pricing')->name('pricing.')->group(function () {
 
 Route::prefix('detail-pricings')->name('detail-pricings.')->group(function () {
     Route::get('/', [DetailPricingController::class, 'index'])->name('index');
-    Route::get('/{type}', [DetailPricingController::class, 'getByType'])->name('type'); 
+    Route::get('/{type}', [DetailPricingController::class, 'getByType'])->name('type');
     Route::post('/', [DetailPricingController::class, 'store'])->name('store');
     Route::put('/{id}', [DetailPricingController::class, 'update'])->name('update');
     Route::delete('/{id}', [DetailPricingController::class, 'destroy'])->name('destroy');
