@@ -15,13 +15,22 @@ class DetailPricing extends Model
         'id_pricings',
         'name',
         'deskripsi',
+        'deskripsi2',
         'status',
         'keuntungan',
-        'type'
+        'type',
     ];
 
     /**
-     * Relasi ke Pricing (many to one).
+     * Cast kolom JSON ke array.
+     */
+    protected $casts = [
+        'name' => 'array',
+        'status' => 'array',
+    ];
+
+    /**
+     * Relasi ke model Pricing (many to one).
      */
     public function pricing()
     {
