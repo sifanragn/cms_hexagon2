@@ -20,9 +20,9 @@ class ClientsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'status' => 'required|in:0,1,2',
-            'foto_client' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+        'name' => 'required|string|max:255',
+        'status' => 'required|in:0,1,2,3',
+        'foto_client' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         $file = $request->file('foto_client');
@@ -44,9 +44,9 @@ class ClientsController extends Controller
     public function update(Request $request, Clients $client)
     {
         $validated = $request->validate([
-            'name'        => 'required|string|max:255',
-            'status'      => 'required|in:0,1,2',
-            'foto_client' => 'sometimes|image|mimes:jpg,jpeg,png,webp|max:2048',
+        'name'        => 'required|string|max:255',
+        'status'      => 'required|in:0,1,2,3',
+        'foto_client' => 'sometimes|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         if ($request->hasFile('foto_client')) {

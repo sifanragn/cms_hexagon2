@@ -33,14 +33,15 @@
                         <tr>
                             <td class="px-6 py-4">{{ $client->name }}</td>
                             <td class="px-6 py-4">
-                                <img src="{{ asset('storage/foto_client/' . $client->foto_client) }}" alt="Logo"
-                                    class="w-12 h-12 object-contain">
+                               <img src="{{ asset('storage/' . $client->foto_client) }}" alt="Logo" class="w-12 h-12 object-contain">
                             </td>
                             <td class="px-6 py-4">
                                 @if ($client->status == 1)
                                     Our Client
-                                @elseif($client->status == 2)
+                                @elseif ($client->status == 2)
                                     Mitra
+                                @elseif ($client->status == 3)
+                                    SMK Binaan
                                 @else
                                     Media
                                 @endif
@@ -67,7 +68,9 @@
                         <!-- Edit Modal -->
                         <div id="editClientModal{{ $client->id }}"
                             class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm hidden">
-                            <div class="bg-white w-full max-w-md rounded-xl p-6 relative shadow-lg">
+                            <div class="bg-white text-gray-800 
+                                w-full max-w-md rounded-xl p-6 relative shadow-lg">
+
                                 <button class="absolute top-3 right-4 text-gray-500 hover:text-gray-700 text-xl"
                                     onclick="document.getElementById('editClientModal{{ $client->id }}').classList.add('hidden')">
                                     &times;
@@ -125,6 +128,11 @@
                                                     {{ $client->status == 2 ? 'checked' : '' }}>
                                                 Mitra
                                             </label>
+                                            <label class="inline-flex items-center gap-2 text-sm">
+                                                <input type="radio" name="status" value="3" class="accent-blue-600"
+                                                    {{ $client->status == 3 ? 'checked' : '' }}>
+                                                SMK Binaan
+                                            </label>
                                         </div>
                                     </div>
 
@@ -149,7 +157,9 @@
 
     <!-- Add Modal -->
     <div id="addClientModal" class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 hidden">
-        <div class="bg-white w-full max-w-md rounded-xl p-6 relative shadow-lg">
+       <div class="bg-white text-gray-800 
+    w-full max-w-md rounded-xl p-6 relative shadow-lg">
+
             <button class="absolute top-3 right-4 text-gray-500 hover:text-gray-700 text-xl"
                 onclick="document.getElementById('addClientModal').classList.add('hidden')">
                 &times;
@@ -162,7 +172,10 @@
 
                 <div class="flex justify-center mb-6">
                     <div id="addPreviewContainer"
-                        class="w-24 h-24 rounded-full border-2 border-dashed border-gray-300 overflow-hidden flex items-center justify-center text-gray-400 text-2xl">
+                    class="w-24 h-24 rounded-full border-2 
+                        border-gray-300 dark:border-gray-600 
+                        bg-gray-100 dark:bg-gray-700
+                        flex items-center justify-center overflow-hidden">
                         <img id="addPreviewImage" src="{{ asset('images/preview-icon.png') }}" alt="Preview"
                             class="object-contain w-full h-full hidden" />
                         <span id="addPlaceholderIcon"><i class="fas fa-image"></i></span>
@@ -199,6 +212,10 @@
                         <label class="inline-flex items-center gap-2 text-sm">
                             <input type="radio" name="status" value="2" class="accent-blue-600" />
                             Mitra
+                        </label>
+                        <label class="inline-flex items-center gap-2 text-sm">
+                            <input type="radio" name="status" value="3" class="accent-blue-600">
+                            SMK Binaan
                         </label>
                     </div>
                 </div>
