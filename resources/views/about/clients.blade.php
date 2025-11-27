@@ -67,68 +67,91 @@
 
                         <!-- Edit Modal -->
                         <div id="editClientModal{{ $client->id }}"
-                            class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm hidden">
-                            <div class="bg-white text-gray-800 
-                                w-full max-w-md rounded-xl p-6 relative shadow-lg">
+                            class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm hidden">
 
+                            <div class="bg-white text-gray-800 w-full max-w-md rounded-2xl p-6 relative shadow-xl">
+
+                                <!-- Close -->
                                 <button class="absolute top-3 right-4 text-gray-500 hover:text-gray-700 text-xl"
                                     onclick="document.getElementById('editClientModal{{ $client->id }}').classList.add('hidden')">
                                     &times;
                                 </button>
 
-                                <h2 class="text-xl font-semibold text-center text-gray-800 mb-6">Edit Client</h2>
+                                <h2 class="text-xl font-semibold text-center mb-6">Edit Client</h2>
 
-                                <form action="{{ route('clients.update', $client->id) }}" method="POST"
-                                    enctype="multipart/form-data">
+                                <form action="{{ route('clients.update', $client->id) }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     @method('PUT')
 
-                                    <div class="flex justify-center mb-6">
-                                        <div
-                                            class="w-24 h-24 rounded-full border-2 border-dashed border-gray-300 overflow-hidden">
-                                            <img id="editPreviewImage{{ $client->id }}"
-                                                src="{{ asset('storage/' . $client->foto_client) }}" alt="Preview"
-                                                class="object-contain w-full h-full" />
-                                        </div>
-                                    </div>
-
-
-                                    <div class="flex items-center gap-2 mb-5">
-                                        <label
-                                            class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded cursor-pointer">
-                                            CHOOSE FILE
-                                            <input type="file" name="foto_client" class="hidden"
-                                                onchange="previewEditImage(event, {{ $client->id }})">
-                                        </label>
-                                        <span id="editFileName{{ $client->id }}" class="text-gray-500 text-sm">Current:
-                                            {{ $client->foto_client }}</span>
-                                    </div>
-
+                                    <!-- DRAG & DROP UPLOAD -->
                                     <div class="mb-5">
-                                        <label class="block text-sm font-medium text-gray-700 mb-1">Nama</label>
-                                        <input type="text" name="name" required value="{{ $client->name }}"
-                                            class="w-full px-4 py-2 border-2  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600" />
+                                        <label class="block text-sm font-medium mb-2">Logo Client</label>
+
+                                        <div id="dropZoneEdit{{ $client->id }}"
+                                        class="relative border-2 border-dashed border-gray-300 rounded-xl p-4
+                                            bg-gray-50 text-center cursor-pointer hover:bg-gray-100 transition">
+
+                                        <!-- Zoom Button -->
+                                        <button type="button" id="zoomBtnEdit{{ $client->id }}"
+                                        class="absolute top-2 right-2 w-7 h-7 bg-white rounded-full shadow
+                                            flex items-center justify-center text-gray-700 hover:bg-gray-200 z-20"
+                                        style="pointer-events: auto;">
+                                        <span style="pointer-events: none;">🔍</span>
+                                    </button>
+
+                                        <!-- File Input -->
+                                        <input type="file"
+                                            id="fileInputEdit{{ $client->id }}"
+                                            name="foto_client"
+                                            class="hidden"
+                                            accept="image/png,image/jpeg,image/webp">
+
+                                        <!-- Preview -->
+                                        <img id="previewEdit{{ $client->id }}"
+                                            src="{{ asset('storage/' . $client->foto_client) }}"
+                                            class="w-28 h-28 mx-auto mt-3 object-contain rounded-lg cursor-pointer" />
+
+                                        <!-- Placeholder (tidak dipakai saat edit, tapi tetap disiapkan) -->
+                                        <p id="placeholderEdit{{ $client->id }}" class="text-gray-500 mt-2 hidden">
+                                            Drag & Drop atau klik untuk pilih ulang gambar<br>
+                                            <span class="text-xs text-gray-400">PNG, JPG, WEBP</span>
+                                        </p>
                                     </div>
 
+                                    <p id="fileNameEdit{{ $client->id }}" class="text-xs text-gray-500 mt-1">
+                                        Current: {{ $client->foto_client }}
+                                    </p>
+
+                                    </div>
+
+                                    <!-- NAME -->
+                                    <div class="mb-5">
+                                        <label class="block text-sm font-medium mb-1">Nama</label>
+                                        <input type="text" name="name" value="{{ $client->name }}"
+                                            class="w-full px-4 py-2 border-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                                            required>
+                                    </div>
+
+                                    <!-- STATUS -->
                                     <div class="mb-6">
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                                        <div class="flex gap-4">
-                                            <label class="inline-flex items-center gap-2 text-sm">
+                                        <label class="block text-sm font-medium mb-2">Status</label>
+                                        <div class="flex flex-wrap gap-4">
+                                            <label class="flex items-center gap-2 text-sm">
                                                 <input type="radio" name="status" value="1" class="accent-blue-600"
                                                     {{ $client->status == 1 ? 'checked' : '' }}>
                                                 Our Client
                                             </label>
-                                            <label class="inline-flex items-center gap-2 text-sm">
+                                            <label class="flex items-center gap-2 text-sm">
                                                 <input type="radio" name="status" value="0" class="accent-blue-600"
                                                     {{ $client->status == 0 ? 'checked' : '' }}>
                                                 Our Media
                                             </label>
-                                            <label class="inline-flex items-center gap-2 text-sm">
+                                            <label class="flex items-center gap-2 text-sm">
                                                 <input type="radio" name="status" value="2" class="accent-blue-600"
                                                     {{ $client->status == 2 ? 'checked' : '' }}>
                                                 Mitra
                                             </label>
-                                            <label class="inline-flex items-center gap-2 text-sm">
+                                            <label class="flex items-center gap-2 text-sm">
                                                 <input type="radio" name="status" value="3" class="accent-blue-600"
                                                     {{ $client->status == 3 ? 'checked' : '' }}>
                                                 SMK Binaan
@@ -137,7 +160,8 @@
                                     </div>
 
                                     <div class="flex justify-end gap-3">
-                                        <button type="button" class="bg-gray-100 text-gray-800 px-4 py-2 rounded"
+                                        <button type="button"
+                                            class="bg-gray-100 text-gray-800 px-4 py-2 rounded"
                                             onclick="document.getElementById('editClientModal{{ $client->id }}').classList.add('hidden')">
                                             Batal
                                         </button>
@@ -155,83 +179,107 @@
         </div>
     </div>
 
-    <!-- Add Modal -->
-    <div id="addClientModal" class="fixed inset-0 z-50 flex items-center justify-center bg-white/30 hidden">
-       <div class="bg-white text-gray-800 
-    w-full max-w-md rounded-xl p-6 relative shadow-lg">
+   <!-- Add Modal -->
+    <div id="addClientModal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm hidden">
 
+        <div class="bg-white text-gray-800 w-full max-w-md rounded-2xl p-6 relative shadow-xl">
+
+            <!-- Close Button -->
             <button class="absolute top-3 right-4 text-gray-500 hover:text-gray-700 text-xl"
                 onclick="document.getElementById('addClientModal').classList.add('hidden')">
                 &times;
             </button>
 
-            <h2 class="text-xl font-semibold text-center text-gray-800 mb-6">Tambah Client Baru</h2>
+            <h2 class="text-xl font-semibold text-center mb-6">Tambah Client Baru</h2>
 
             <form action="{{ route('clients.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
-                <div class="flex justify-center mb-6">
-                    <div id="addPreviewContainer"
-                    class="w-24 h-24 rounded-full border-2 
-                        border-gray-300 dark:border-gray-600 
-                        bg-gray-100 dark:bg-gray-700
-                        flex items-center justify-center overflow-hidden">
-                        <img id="addPreviewImage" src="{{ asset('images/preview-icon.png') }}" alt="Preview"
-                            class="object-contain w-full h-full hidden" />
-                        <span id="addPlaceholderIcon"><i class="fas fa-image"></i></span>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-2 mb-5">
-                    <label
-                        class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded cursor-pointer">
-                        CHOOSE FILE
-                        <input type="file" name="foto_client" class="hidden" onchange="previewAddImage(event)">
-                    </label>
-                    <span id="addFileName" class="text-gray-500 text-sm">No file chosen</span>
-                </div>
-
+                <!-- DRAG & DROP UPLOAD -->
                 <div class="mb-5">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama</label>
-                    <input type="text" name="name" placeholder="Masukkan nama client"
-                        class="w-full px-4 py-2 border-2  rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-                        required />
+                    <label class="block text-sm font-medium mb-2">Logo Client</label>
+
+                    <div id="dropZoneAdd" class="relative border-2 border-dashed
+                       border-gray-300 rounded-xl p-4
+                            bg-gray-50 text-center cursor-pointer hover:bg-gray-100 transition">
+                              <!-- Zoom button -->
+                            <button type="button" id="zoomBtnAdd"
+                                class="hidden absolute top-2 right-2 w-7 h-7 bg-white rounded-full shadow
+                                flex items-center justify-center text-gray-700 hover:bg-gray-200 z-20">
+                                🔍
+                            </button>
+                        <input type="file"
+                            id="fileInputAdd"
+                            name="foto_client"
+                            class="hidden"
+                            accept="image/png,image/jpeg,image/webp">
+
+                        <!-- Preview -->
+                        <img id="previewAdd"
+                            class="w-28 h-28 mx-auto mt-3 object-contain rounded-lg hidden cursor-pointer" />
+
+                        <!-- Placeholder text -->
+                        <p id="placeholderAdd" class="text-gray-500">
+                            Drag & Drop atau Klik untuk pilih gambar<br>
+                            <span class="text-xs text-gray-400">Format: PNG, JPG, WEBP</span>
+                        </p>
+                    </div>
+
+                    <p id="fileNameAdd" class="text-xs text-gray-500 mt-1">Belum ada file</p>
                 </div>
 
+                <!-- INPUT NAME -->
+                <div class="mb-5">
+                    <label class="block text-sm font-medium mb-1">Nama</label>
+                    <input type="text" name="name" placeholder="Masukkan nama client"
+                        class="w-full px-4 py-2 border-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        required>
+                </div>
+
+                <!-- STATUS -->
                 <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                    <div class="flex gap-4">
-                        <label class="inline-flex items-center gap-2 text-sm">
-                            <input type="radio" name="status" value="1" class="accent-blue-600" checked />
+                    <label class="block text-sm font-medium mb-2">Status</label>
+                    <div class="flex flex-wrap gap-4">
+                        <label class="flex items-center gap-2 text-sm">
+                            <input type="radio" name="status" value="1" class="accent-blue-600" checked>
                             Our Client
                         </label>
-                        <label class="inline-flex items-center gap-2 text-sm">
-                            <input type="radio" name="status" value="0" class="accent-blue-600" />
+
+                        <label class="flex items-center gap-2 text-sm">
+                            <input type="radio" name="status" value="0" class="accent-blue-600">
                             Our Media
                         </label>
-                        <label class="inline-flex items-center gap-2 text-sm">
-                            <input type="radio" name="status" value="2" class="accent-blue-600" />
+
+                        <label class="flex items-center gap-2 text-sm">
+                            <input type="radio" name="status" value="2" class="accent-blue-600">
                             Mitra
                         </label>
-                        <label class="inline-flex items-center gap-2 text-sm">
+
+                        <label class="flex items-center gap-2 text-sm">
                             <input type="radio" name="status" value="3" class="accent-blue-600">
                             SMK Binaan
                         </label>
                     </div>
                 </div>
 
+                <!-- BUTTONS -->
                 <div class="flex justify-end gap-3">
-                    <button type="button" class="bg-gray-100 text-gray-800 px-4 py-2 rounded"
+                    <button type="button"
+                        class="bg-gray-100 px-4 py-2 rounded text-gray-800"
                         onclick="document.getElementById('addClientModal').classList.add('hidden')">
                         Batal
                     </button>
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+
+                    <button type="submit"
+                        class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white">
                         Save
                     </button>
                 </div>
             </form>
         </div>
     </div>
+
 
     <!-- Scripts -->
     <!-- SweetAlert2 CDN -->
@@ -290,4 +338,141 @@
             });
         @endif
     </script>
+
+    <script>
+// ============================
+// IMAGE POPUP
+// ============================
+function showImagePopup(src) {
+    const popup = document.createElement("div");
+    popup.className =
+        "fixed inset-0 bg-black/70 flex items-center justify-center z-[9999]";
+    popup.innerHTML = `
+        <img src="${src}" class="max-w-[90%] max-h-[90%] rounded-lg shadow-2xl" />
+    `;
+    popup.onclick = () => popup.remove();
+    document.body.appendChild(popup);
+}
+
+// ============================
+// DRAG & DROP ADD
+// ============================
+function setupAddDragDrop() {
+    const dropZone = document.getElementById("dropZoneAdd");
+    const fileInput = document.getElementById("fileInputAdd");
+    const preview = document.getElementById("previewAdd");
+    const placeholder = document.getElementById("placeholderAdd");
+    const fileName = document.getElementById("fileNameAdd");
+    const zoomBtn = document.getElementById("zoomBtnAdd");
+
+    dropZone.addEventListener("click", (e) => {
+        if (e.target.id === "zoomBtnAdd") return; // ⛔ jangan buka file dialog
+        fileInput.click();
+    });
+
+    dropZone.addEventListener("dragover", e => {
+        e.preventDefault();
+        dropZone.classList.add("bg-gray-200");
+    });
+
+    dropZone.addEventListener("dragleave", () => {
+        dropZone.classList.remove("bg-gray-200");
+    });
+
+    dropZone.addEventListener("drop", e => {
+        e.preventDefault();
+        dropZone.classList.remove("bg-gray-200");
+        handleFile(e.dataTransfer.files[0]);
+    });
+
+    fileInput.addEventListener("change", () => {
+        handleFile(fileInput.files[0]);
+    });
+
+    function handleFile(file) {
+        if (!file) return;
+
+        const allowed = ["image/png", "image/jpeg", "image/webp"];
+        if (!allowed.includes(file.type)) {
+            alert("❌ Format harus PNG / JPG / WEBP");
+            return;
+        }
+
+        preview.src = URL.createObjectURL(file);
+        preview.classList.remove("hidden");
+        placeholder.classList.add("hidden");
+
+        fileName.textContent = file.name;
+
+        zoomBtn.classList.remove("hidden");
+        zoomBtn.onclick = () => showImagePopup(preview.src);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", setupAddDragDrop);
+</script>
+<script>
+// ============================
+// DRAG & DROP EDIT
+// ============================
+function setupEditDragDrop(id) {
+
+    const dropZone = document.getElementById("dropZoneEdit" + id);
+    const fileInput = document.getElementById("fileInputEdit" + id);
+    const preview = document.getElementById("previewEdit" + id);
+    const placeholder = document.getElementById("placeholderEdit" + id);
+    const fileName = document.getElementById("fileNameEdit" + id);
+    const zoomBtn = document.getElementById("zoomBtnEdit" + id);
+
+    // Buka file dialog, kecuali klik tombol zoom
+    dropZone.addEventListener("click", (e) => {
+        if (e.target.id === "zoomBtnEdit" + id) return;
+        fileInput.click();
+    });
+
+    dropZone.addEventListener("dragover", e => {
+        e.preventDefault();
+        dropZone.classList.add("bg-gray-200");
+    });
+
+    dropZone.addEventListener("dragleave", () => {
+        dropZone.classList.remove("bg-gray-200");
+    });
+
+    dropZone.addEventListener("drop", e => {
+        e.preventDefault();
+        dropZone.classList.remove("bg-gray-200");
+        handleFile(e.dataTransfer.files[0]);
+    });
+
+    fileInput.addEventListener("change", () => {
+        handleFile(fileInput.files[0]);
+    });
+
+    function handleFile(file) {
+        if (!file) return;
+
+        const allowed = ["image/png", "image/jpeg", "image/webp"];
+        if (!allowed.includes(file.type)) {
+            alert("❌ Format harus PNG / JPG / WEBP");
+            return;
+        }
+
+        preview.src = URL.createObjectURL(file);
+        placeholder.classList.add("hidden");
+
+        fileName.textContent = file.name;
+    }
+
+    zoomBtn.onclick = () => showImagePopup(preview.src);
+}
+
+// Register semua edit modal
+document.addEventListener("DOMContentLoaded", () => {
+    @foreach ($clients as $client)
+        setupEditDragDrop({{ $client->id }});
+    @endforeach
+});
+</script>
+
 @endsection

@@ -8,15 +8,32 @@ use Illuminate\Http\Request;
 
 class ApiClientsController extends Controller
 {
-    public function index()
-    {
-        $clients = Clients::all();
+public function index(Request $request)
+{
+    $query = Clients::query();
 
-        return response()-> json([
-
-            'status' => 'success',
-            'data' => $clients
-
-        ]);
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
     }
+
+    $data = $query->get()->map(function($client) {
+
+        return [
+            'id'    => $client->id,
+            'name'  => $client->name,
+            'status'=> $client->status,
+
+            // ✔ FIX: benar, tidak double folder
+            'foto_client' => $client->foto_client 
+                ? asset('storage/' . $client->foto_client)
+                : null,
+        ];
+    });
+
+    return response()->json([
+        'data' => $data,
+    ]);
+}
+
+
 }
